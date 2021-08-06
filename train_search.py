@@ -21,7 +21,7 @@ from byol_pytorch import BYOL
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--workers', type=int, default=2, help='number of workers to load dataset')
-parser.add_argument('--batch_size', type=int, default=16, help='batch size')
+parser.add_argument('--batch_size', type=int, default=4, help='batch size')
 parser.add_argument('--learning_rate', type=float, default=0.025, help='init learning rate')
 parser.add_argument('--learning_rate_min', type=float, default=0.0, help='min learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
@@ -126,7 +126,7 @@ def main():
     eps_no_archs = [10, 10, 10]
     for sp in range(len(num_to_keep)):
         model = Network(args.init_channels + int(add_width[sp]), args.out_dim, args.layers + int(add_layers[sp]), switches_normal=switches_normal, switches_reduce=switches_reduce, p=float(drop_rate[sp]))
-        model = BYOL(model, image_size=args.img_size, hidden_layer='global_pooling')
+        model = BYOL(model, image_size=args.img_size, hidden_layer='global_pooling', projection_hidden_size=256)
         model = nn.DataParallel(model)
         model = model.cuda()
         logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
